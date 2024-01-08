@@ -19,25 +19,11 @@ type InterviewSettings = {
   interviewMode: string;
 };
 
-type DraftTable = {
-  title?: string | undefined;
-  openings?: number | undefined;
-  gender?: string | undefined;
-  urgency?: string | undefined;
-  jobTitle?: string | undefined;
-  jobDetails?: string | undefined;
-  jobLocation?: string | undefined;
-  interviewMode?: string | undefined;
-  interviewDuration?: string | undefined;
-  interviewLanguage?: string | undefined;
-};
-
 type InitialStateValue = {
   tabIndex: number;
   requisitionDetails: RequisitionDetails;
   jobDetails: JobDetails;
   interviewSettings: InterviewSettings;
-  //   draftTable: DraftTable;
 };
 
 const initialState: InitialStateValue = {
@@ -58,7 +44,6 @@ const initialState: InitialStateValue = {
     interviewLanguage: "",
     interviewMode: "",
   },
-  //   draftTable: {},
 };
 
 const dataSlice = createSlice({
@@ -77,35 +62,9 @@ const dataSlice = createSlice({
 
       const formState = state[form];
 
-      if(form === "requisitionDetails"){
-       state.requisitionDetails.requisitionTitle = value as string
+      if (formState) {
+        // formState[field] = value; //! Type Error
       }
-
-
-      console.log("State", state);
-      console.log("FormState", formState);
-
-      // // Check if the form exists in the state
-      // if (formState) {
-      //   // Check if the field exists in the form
-
-      //   let fieldValue = formState[field] as keyof InitialStateValue;
-
-      //   if (
-      //     fieldValue !== undefined &&
-      //     fieldValue !== null &&
-      //     typeof fieldValue !== "number"
-      //   ) {
-      //     // Update the value
-      //     fieldValue = value;
-      //   } else {
-      //     // Handle the case where the field doesn't exist
-      //     console.error(`Field '${field}' does not exist in form '${form}'.`);
-      //   }
-      // } else {
-      //   // Handle the case where the form doesn't exist
-      //   console.error(`Form '${form}' does not exist.`);
-      // }
     },
     moveTabs: (state, action) => {
       state.tabIndex = action.payload.value;
