@@ -13,6 +13,7 @@ import {
 import { RootState } from "@src/redux/store";
 import React from "react";
 import { useSelector } from "react-redux";
+import { useData } from "./DataProvider";
 import InterviewSettingsForm from "./InterviewSettingsForm";
 import JobDetailsForm from "./JobDetailsForm";
 import DisplayCard from "./PreviewCard";
@@ -27,7 +28,9 @@ const CustomTab: React.FC<TabProps> = ({ children, ...props }) => {
 };
 
 const HomeLayout = () => {
-  const tabIndexPos = useSelector((state: RootState) => state.data.tabIndex);
+  // const tabIndexPos = useSelector((state: RootState) => state.data.tabIndex);
+
+  const data = useData();
 
   return (
     <Box w="100%">
@@ -35,7 +38,7 @@ const HomeLayout = () => {
         <Heading fontFamily="Poppins" fontSize="1.5rem" my="2rem">
           Create Candidate Requisition
         </Heading>
-        <Tabs isLazy index={tabIndexPos}>
+        <Tabs isLazy index={data?.state.tabIndex}>
           <TabList>
             <CustomTab>Requistion Details</CustomTab>
             <CustomTab>Job Details</CustomTab>

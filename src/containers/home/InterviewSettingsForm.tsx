@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import FormSelect from "../../components/formComponents/FormSelect";
 import { IInterViewSettings } from "../../interface/forms";
+import { initialValues, useData } from "./DataProvider";
 import {
   interviewDurationOptions,
   interviewLanguageOptions,
@@ -14,10 +15,11 @@ import {
 } from "./constants";
 
 const InterviewDetailsForm: React.FC = () => {
-  const data = useSelector((state: RootState) => state.data);
-  const dispatch = useDispatch();
+  // const data = useSelector((state: RootState) => state.data);
+  // const dispatch = useDispatch();
+  // const { interviewSettings, tabIndex } = data;
 
-  const { interviewSettings, tabIndex } = data;
+  const data = useData();
 
   const {
     errors,
@@ -28,9 +30,9 @@ const InterviewDetailsForm: React.FC = () => {
     setFieldValue,
   } = useFormik<IInterViewSettings>({
     initialValues: {
-      interviewMode: interviewSettings.interviewMode,
-      interviewDuration: interviewSettings.interviewDuration,
-      interviewLanguage: interviewSettings.interviewLanguage,
+      interviewMode: data?.state.interviewSettings.interviewMode || "",
+      interviewDuration: data?.state.interviewSettings.interviewDuration || "",
+      interviewLanguage: data?.state.interviewSettings.interviewLanguage || "",
     },
     validationSchema: Yup.object().shape({
       interviewMode: Yup.string().required("Interview Mode is required"), //* These are the validations
@@ -45,19 +47,29 @@ const InterviewDetailsForm: React.FC = () => {
     onSubmit: (values) => {
       console.log({ values });
       alert("Form successfully submitted");
+
+      data?.setState(initialValues);
     },
   });
 
   const handleSelectChange = (name: string, selectedValue: string) => {
     setFieldValue(name, selectedValue);
 
-    dispatch(
-      updateFormData({
-        form: "interviewSettings",
-        field: name,
-        value: selectedValue,
-      }),
-    );
+    data?.setState({
+      ...data?.state,
+      interviewSettings: {
+        ...data?.state.interviewSettings,
+        [name]: selectedValue,
+      },
+    });
+
+    // dispatch(
+    //   updateFormData({
+    //     form: "interviewSettings",
+    //     field: name,
+    //     value: selectedValue,
+    //   }),
+    // );
   };
 
   return (
@@ -100,7 +112,13 @@ const InterviewDetailsForm: React.FC = () => {
           <Button
             colorScheme="gray"
             type="button"
-            onClick={() => dispatch(moveTabs({ value: tabIndex - 1 }))}
+            // onClick={() => dispatch(moveTabs({ value: tabIndex - 1 }))}
+            onClick={() =>
+              data?.setState({
+                ...data?.state,
+                tabIndex: data.state.tabIndex - 1,
+              })
+            }
           >
             Previous
           </Button>

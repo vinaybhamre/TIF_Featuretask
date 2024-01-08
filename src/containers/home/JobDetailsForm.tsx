@@ -12,19 +12,21 @@ import { RootState } from "@src/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../../components/formComponents/FormInput";
 import { IJobDetails } from "../../interface/forms";
+import { useData } from "./DataProvider";
 
 const JobDetailsForm: React.FC = () => {
-  const data = useSelector((state: RootState) => state.data);
-  const dispatch = useDispatch();
+  // const data = useSelector((state: RootState) => state.data);
+  // const dispatch = useDispatch();
+  // const { tabIndex, jobDetails } = data;
 
-  const { tabIndex, jobDetails } = data;
+  const data = useData();
 
   const { handleChange, errors, touched, handleBlur, handleSubmit, values } =
     useFormik<IJobDetails>({
       initialValues: {
-        jobTitle: jobDetails.jobTitle,
-        jobDetails: jobDetails.jobDetails,
-        jobLocation: jobDetails.jobLocation,
+        jobTitle: data?.state.jobDetails.jobTitle || "",
+        jobDetails: data?.state.jobDetails.jobDetails || "",
+        jobLocation: data?.state.jobDetails.jobLocation || "",
       },
       validationSchema: Yup.object().shape({
         jobTitle: Yup.string().required("Job Title is required"),
@@ -34,20 +36,34 @@ const JobDetailsForm: React.FC = () => {
       }),
       onSubmit: (values) => {
         // Go to next step
+        // dispatch(submitForm());
+
         console.log({ values });
-        dispatch(submitForm());
+        data?.setState({
+          ...data?.state,
+          tabIndex: 2,
+        });
       },
     });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
-    dispatch(
-      updateFormData({
-        form: "jobDetails",
-        field: e.target.name,
-        value: e.target.value,
-      }),
-    );
+
+    data?.setState({
+      ...data?.state,
+      jobDetails: {
+        ...data?.state.jobDetails,
+        [e.target.name]: e.target.value,
+      },
+    });
+
+    // dispatch(
+    //   updateFormData({
+    //     form: "jobDetails",
+    //     field: e.target.name,
+    //     value: e.target.value,
+    //   }),
+    // );
   };
 
   return (
@@ -87,7 +103,13 @@ const JobDetailsForm: React.FC = () => {
           <Button
             colorScheme="gray"
             type="button"
-            onClick={() => dispatch(moveTabs({ value: tabIndex - 1 }))}
+            // onClick={() => dispatch(moveTabs({ value: tabIndex - 1 }))}
+            onClick={() =>
+              data?.setState({
+                ...data?.state,
+                tabIndex: data.state.tabIndex - 1,
+              })
+            }
           >
             Previous
           </Button>

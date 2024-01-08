@@ -2,6 +2,7 @@ import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { RootState } from "@src/redux/store";
 import React from "react";
 import { useSelector } from "react-redux";
+import { useData } from "./DataProvider";
 
 const DataCard: React.FC<{ title: string; children: React.ReactNode }> = ({
   title,
@@ -36,9 +37,10 @@ const KeyValue: React.FC<{
 };
 
 const PreviewCard: React.FC = () => {
-  const data = useSelector((state: RootState) => state.data);
+  // const data = useSelector((state: RootState) => state.data);
+  // const {jobDetails, requisitionDetails, interviewSettings} = data
 
-  const {jobDetails, requisitionDetails, interviewSettings} = data
+  const data = useData();
 
   return (
     <Box p="1rem">
@@ -70,14 +72,16 @@ const PreviewCard: React.FC = () => {
               alignItems="center"
             >
               <Text fontSize="0.9rem" fontWeight="500">
-                {requisitionDetails.requisitionTitle}
+                {/* {requisitionDetails.requisitionTitle} */}
+                {data?.state?.requisitionDetails?.requisitionTitle}
               </Text>
               <Flex justifyContent="space-around" alignItems="center">
                 <Text fontSize="0.8rem" mr="0.4rem" fontWeight="200" as="p">
                   OPENINGS
                 </Text>
                 <Text fontSize="1rem" fontWeight="bold" as="span">
-                  {requisitionDetails.noOfOpenings || 0}
+                  {/* {requisitionDetails.noOfOpenings || 0} */}
+                  {data?.state?.requisitionDetails?.noOfOpenings || 0}
                 </Text>
               </Flex>
             </Flex>
@@ -85,29 +89,41 @@ const PreviewCard: React.FC = () => {
         </Box>
         <Box maxH="50rem" overflowY="auto" px="24px" pb="24px">
           <DataCard title="Requisition Details">
-            <KeyValue title="Urgency" value={requisitionDetails.urgency} />
-            <KeyValue title="Gender" value={requisitionDetails.gender} />
+            <KeyValue
+              title="Urgency"
+              value={data?.state?.requisitionDetails?.urgency}
+            />
+            <KeyValue
+              title="Gender"
+              value={data?.state?.requisitionDetails?.gender}
+            />
           </DataCard>
           <DataCard title="Job Detail">
-            <KeyValue title="Job Title" value={jobDetails.jobTitle} />
-            <KeyValue title="Job Details" value={jobDetails.jobDetails} />
+            <KeyValue
+              title="Job Title"
+              value={data?.state?.jobDetails?.jobTitle}
+            />
+            <KeyValue
+              title="Job Details"
+              value={data?.state?.jobDetails?.jobDetails}
+            />
             <KeyValue
               title="Job Location"
-              value={jobDetails.jobLocation}
+              value={data?.state?.jobDetails?.jobLocation}
             />
           </DataCard>
           <DataCard title="Interview Settings">
             <KeyValue
               title="Interview Duration"
-              value={interviewSettings.interviewDuration}
+              value={data?.state?.interviewSettings?.interviewDuration}
             />
             <KeyValue
               title="Interview Language"
-              value={interviewSettings.interviewLanguage}
+              value={data?.state?.interviewSettings?.interviewLanguage}
             />
             <KeyValue
               title="Interview Mode"
-              value={interviewSettings.interviewMode}
+              value={data?.state?.interviewSettings?.interviewMode}
             />
           </DataCard>
         </Box>

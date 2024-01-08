@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
-const initialValues = {
+export const initialValues = {
+  tabIndex: 0,
   requisitionDetails: {
     gender: "",
     noOfOpenings: 0,

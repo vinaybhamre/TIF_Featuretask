@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Draft } from "immer";
+
 type RequisitionDetails = {
   gender: string;
   noOfOpenings: number;
@@ -77,9 +77,35 @@ const dataSlice = createSlice({
 
       const formState = state[form];
 
-      if (typeof formState !== "number") {
-        formState[field] = value;
+      if(form === "requisitionDetails"){
+       state.requisitionDetails.requisitionTitle = value as string
       }
+
+
+      console.log("State", state);
+      console.log("FormState", formState);
+
+      // // Check if the form exists in the state
+      // if (formState) {
+      //   // Check if the field exists in the form
+
+      //   let fieldValue = formState[field] as keyof InitialStateValue;
+
+      //   if (
+      //     fieldValue !== undefined &&
+      //     fieldValue !== null &&
+      //     typeof fieldValue !== "number"
+      //   ) {
+      //     // Update the value
+      //     fieldValue = value;
+      //   } else {
+      //     // Handle the case where the field doesn't exist
+      //     console.error(`Field '${field}' does not exist in form '${form}'.`);
+      //   }
+      // } else {
+      //   // Handle the case where the form doesn't exist
+      //   console.error(`Form '${form}' does not exist.`);
+      // }
     },
     moveTabs: (state, action) => {
       state.tabIndex = action.payload.value;

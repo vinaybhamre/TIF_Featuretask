@@ -9,12 +9,21 @@ import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import { IRequisitionDetails } from "../../interface/forms";
+import { useData } from "./DataProvider";
 import { genderOptions, urgencyOptions } from "./constants";
 
 const RequisitionDetailsForm: React.FC = () => {
-  const data = useSelector((state: RootState) => state.data.requisitionDetails);
+  // const data = useSelector((state: RootState) => state.data.requisitionDetails);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+
+  const data = useData();
+
+  // const { state, setState } = data;
+
+  console.log("State", data?.state);
+  console.log("SetState", data?.setState);
+  console.log("Data", data);
 
   const {
     handleChange,
@@ -27,10 +36,10 @@ const RequisitionDetailsForm: React.FC = () => {
     setFieldValue,
   } = useFormik<IRequisitionDetails>({
     initialValues: {
-      requisitionTitle: data.requisitionTitle,
-      noOfOpenings: data.noOfOpenings,
-      urgency: data.urgency,
-      gender: data.gender,
+      requisitionTitle: data?.state.requisitionDetails.requisitionTitle || "",
+      noOfOpenings: data?.state.requisitionDetails.noOfOpenings || 0,
+      urgency: data?.state.requisitionDetails.urgency || "",
+      gender: data?.state.requisitionDetails.gender || "",
     },
     validationSchema: Yup.object().shape({
       requisitionTitle: Yup.string().required("Requisition title is required"),
@@ -44,31 +53,54 @@ const RequisitionDetailsForm: React.FC = () => {
     }),
     onSubmit: (values) => {
       //  Go to Next Step
-      dispatch(submitForm());
+      // dispatch(submitForm());
+
+      console.log({ values });
+      data?.setState({
+        ...data?.state,
+        tabIndex: 1,
+      });
     },
   });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
-    dispatch(
-      updateFormData({
-        form: "requisitionDetails",
-        field: e.target.name,
-        value: e.target.value,
-      }),
-    );
+
+    data?.setState({
+      ...data?.state,
+      requisitionDetails: {
+        ...data?.state.requisitionDetails,
+        [e.target.name]: e.target.value,
+      },
+    });
+
+    // dispatch(
+    //   updateFormData({
+    //     form: "requisitionDetails",
+    //     field: e.target.name,
+    //     value: e.target.value,
+    //   }),
+    // );
   };
 
   const handleSelectChange = (name: string, selectedValue: string) => {
     setFieldValue(name, selectedValue);
 
-    dispatch(
-      updateFormData({
-        form: "requisitionDetails",
-        field: name,
-        value: selectedValue,
-      }),
-    );
+    data?.setState({
+      ...data?.state,
+      requisitionDetails: {
+        ...data?.state.requisitionDetails,
+        [name]: selectedValue,
+      },
+    });
+
+    // dispatch(
+    //   updateFormData({
+    //     form: "requisitionDetails",
+    //     field: name,
+    //     value: selectedValue,
+    //   }),
+    // );
   };
 
   return (
